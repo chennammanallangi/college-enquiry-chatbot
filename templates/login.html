@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Welcome Back!</h1>
+            <p>Login to access the college enquiry chatbot</p>
+        </div>
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <i class="fas fa-user"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <i class="fas fa-lock"></i>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <span>Login</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            
+            <div class="auth-footer">
+                <p>New here? <a href="{{ url_for('register') }}" class="auth-link">Create an account</a></p>
+            </div>
+        </form>
+    </div>
+    
+    <div class="auth-decoration">
+        <div class="decoration-circle"></div>
+        <div class="decoration-circle"></div>
+        <div class="decoration-circle"></div>
+        <img src="/static/login.webp" alt="Student illustration">
+    </div>
+</div>
+{% endblock %}

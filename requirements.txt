@@ -1,0 +1,7 @@
+pip install --upgrade flask flask-sqlalchemy werkzeug
+
+
+requirements.txt
+flask
+flask-sqlalchemy
+werkzeug

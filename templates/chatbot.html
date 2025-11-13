@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Chatbot{% endblock %}
+{% block content %}
+<div class="chatbot-container">
+    <div class="chatbot-header">
+        <div class="chatbot-info">
+            <div class="chatbot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h2>College Enquiry Bot</h2>
+                <p>Ask me anything about our college</p>
+            </div>
+        </div>
+        <a href="{{ url_for('home') }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+    
+    <div class="chatbot-body" id="chat-container">
+        <div class="chat-message bot-message">
+            <div class="message-content">
+                <p>Hello! I'm your college enquiry assistant. How can I help you today?</p>
+            </div>
+            <div class="message-time">Just now</div>
+        </div>
+    </div>
+    
+    <div class="chatbot-footer">
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Type your question here..." autocomplete="off" required>
+            <button type="submit" class="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+        
+        <div class="quick-questions">
+            <p>Try asking:</p>
+            <div class="quick-buttons">
+                <button class="quick-btn" data-question="What courses do you offer?">Courses</button>
+                <button class="quick-btn" data-question="What is the admission process?">Admissions</button>
+                <button class="quick-btn" data-question="What are the fees?">Fees</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const chatContainer = document.getElementById('chat-container');
+        
+        // Handle form submission
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (message) {
+                addUserMessage(message);
+                userInput.value = '';
+                
+                // Send to server and get response
+                fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `message=${encodeURIComponent(message)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addBotMessage(data.response);
+                });
+            }
+        });
+        
+        // Quick question buttons
+        document.querySelectorAll('.quick-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const question = this.getAttribute('data-question');
+                userInput.value = question;
+                chatForm.dispatchEvent(new Event('submit'));
+            });
+        });
+        
+        function addUserMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message user-message';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+                <div class="message-time">Just now</div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        function addBotMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message bot-message';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+                <div class="message-time">Just now</div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    });
+</script>
+{% endblock %}
